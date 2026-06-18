@@ -1,0 +1,3 @@
+﻿dataset,scope,url,local_status
+Job-SDF benchmark,招聘需求预测研究数据；包含城市、岗位、企业、时间等维度，适合提取岗位数量、城市就业热度和岗位结构。,https://github.com/Job-SDF/benchmark,请按仓库 README 获取完整数据；若网络允许，可进一步下载仓库中的 dataset 文件。
+智联招聘/猎聘/BOSS直聘公开薪酬报告,城市平均薪酬、行业薪酬、人才流动趋势；适合作为城市薪资水平数据来源。,https://www.zhaopin.com/ 或 https://www.liepin.com/ 或 https://www.zhipin.com/,报告通常为网页或 PDF，建议手动下载最新版并记录发布日期。

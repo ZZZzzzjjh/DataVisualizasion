@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2F3A45"/>
+    </marker>
+    <style>
+      .box { fill: #FFFFFF; stroke: #2F3A45; stroke-width: 2; rx: 10; }
+      .source { fill: #EEF5FF; stroke: #2F3A45; stroke-width: 2; rx: 10; }
+      .process { fill: #F7F7F2; stroke: #2F3A45; stroke-width: 2; rx: 10; }
+      .final { fill: #EAF7EF; stroke: #2F3A45; stroke-width: 2.4; rx: 10; }
+      .text { font-family: "Microsoft YaHei", "SimSun", Arial, sans-serif; font-size: 28px; fill: #1F2933; text-anchor: middle; dominant-baseline: middle; }
+      .small { font-size: 24px; }
+      .line { fill: none; stroke: #2F3A45; stroke-width: 2.4; marker-end: url(#arrow); }
+      .thin { fill: none; stroke: #2F3A45; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1400" height="900" fill="#FFFFFF"/>
+
+  <!-- Top sequence -->
+  <rect class="box" x="540" y="45" width="320" height="70"/>
+  <text class="text" x="700" y="80">确定研究主题</text>
+
+  <rect class="box" x="540" y="155" width="320" height="70"/>
+  <text class="text" x="700" y="190">选取研究城市</text>
+
+  <rect class="box" x="540" y="265" width="320" height="70"/>
+  <text class="text" x="700" y="300">明确数据需求</text>
+
+  <path class="line" d="M700 115 L700 153"/>
+  <path class="line" d="M700 225 L700 263"/>
+
+  <!-- Source layer -->
+  <rect class="source" x="80" y="430" width="240" height="80"/>
+  <text class="text small" x="200" y="470">招聘数据</text>
+
+  <rect class="source" x="400" y="430" width="240" height="80"/>
+  <text class="text small" x="520" y="470">统计数据</text>
+
+  <rect class="source" x="760" y="430" width="240" height="80"/>
+  <text class="text small" x="880" y="470">生活成本</text>
+
+  <rect class="source" x="1080" y="430" width="240" height="80"/>
+  <text class="text small" x="1200" y="470">地图边界</text>
+
+  <!-- Split arrows from data demand -->
+  <path class="thin" d="M700 335 L700 375 L200 375 L200 428"/>
+  <path class="thin" d="M700 335 L700 375 L520 375 L520 428"/>
+  <path class="thin" d="M700 335 L700 375 L880 375 L880 428"/>
+  <path class="thin" d="M700 335 L700 375 L1200 375 L1200 428"/>
+
+  <!-- Integration -->
+  <rect class="process" x="540" y="580" width="320" height="70"/>
+  <text class="text" x="700" y="615">整理结构化表格</text>
+
+  <path class="thin" d="M200 510 L200 545 L700 545 L700 578"/>
+  <path class="thin" d="M520 510 L520 545 L700 545 L700 578"/>
+  <path class="thin" d="M880 510 L880 545 L700 545 L700 578"/>
+  <path class="thin" d="M1200 510 L1200 545 L700 545 L700 578"/>
+
+  <rect class="process" x="540" y="690" width="320" height="70"/>
+  <text class="text" x="700" y="725">清洗与标准化</text>
+
+  <rect class="process" x="540" y="800" width="320" height="70"/>
+  <text class="text" x="700" y="835">城市综合数据集</text>
+
+  <path class="line" d="M700 650 L700 688"/>
+  <path class="line" d="M700 760 L700 798"/>
+</svg>

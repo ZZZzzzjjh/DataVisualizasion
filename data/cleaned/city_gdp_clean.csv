@@ -1,0 +1,52 @@
+﻿gdp_rank,city_name_en,city_name_zh,province_en,gdp_2024_cny_million,gdp_2024_usd_million,source
+1.0,Shanghai,上海,municipality,5392671.0,757217.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+2.0,Beijing,北京,municipality,4984310.0,699876.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+3.0,Shenzhen,深圳,Guangdong,3680187.0,516757.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+4.0,Chongqing,重庆,municipality,3219315.0,452043.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+5.0,Guangzhou,广州,Guangdong,3103250.0,435746.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+6.0,Hong Kong,香港,SAR,2899775.0,407176.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+7.0,Suzhou,苏州,Jiangsu,2672698.0,375289.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+8.0,Chengdu,成都,Sichuan,2351130.0,330136.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+9.0,Hangzhou,杭州,Zhejiang,2186000.0,306949.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+10.0,Wuhan,武汉,Hubei,2110623.0,296365.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+11.0,Nanjing,南京,Jiangsu,1850081.0,259781.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+12.0,Ningbo,宁波,Zhejiang,1814770.0,254823.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+13.0,Tianjin,天津,municipality,1802432.0,253090.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+14.0,Qingdao,青岛,Shandong,1671946.0,234768.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+15.0,Wuxi,无锡,Jiangsu,1626329.0,228362.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+16.0,Changsha,长沙,Hunan,1526878.0,214398.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+17.0,Zhengzhou,郑州,Henan,1453210.0,204054.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+18.0,Fuzhou,福州,Fujian,1423676.0,199907.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+19.0,Jinan,济南,Shandong,1352760.0,189949.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+20.0,Hefei,合肥,Anhui,1350770.0,189670.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+21.0,Foshan,佛山,Guangdong,1336190.0,187622.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+22.0,Xi'an,西安,Shaanxi,1331778.0,187003.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+23.0,Quanzhou,泉州,Fujian,1309487.0,183873.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+24.0,Nantong,南通,Jiangsu,1242189.0,174423.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+25.0,Dongguan,东莞,Guangdong,1228215.0,172461.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+26.0,Changzhou,常州,Jiangsu,1081359.0,151840.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+27.0,Yantai,烟台,Shandong,1078283.0,151408.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+28.0,Tangshan,唐山,Hebei,1000390.0,140471.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+29.0,Wenzhou,温州,Zhejiang,971880.0,136467.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+30.0,Xuzhou,徐州,Jiangsu,953712.0,133916.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+31.0,Dalian,大连,Liaoning,951690.0,133632.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+32.0,Shenyang,沈阳,Liaoning,902710.0,126755.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+33.0,Xiamen,厦门,Fujian,858901.0,120603.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+34.0,Shaoxing,绍兴,Zhejiang,836860.0,117508.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+35.0,Kunming,昆明,Yunnan,827522.0,116197.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+36.0,Shijiazhuang,石家庄,Hebei,820340.0,115189.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+37.0,Weifang,潍坊,Shandong,820320.0,115186.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+38.0,Yangzhou,扬州,Jiangsu,780964.0,109660.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+39.0,Nanchang,南昌,Jiangxi,780037.0,109530.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+40.0,Yancheng,盐城,Jiangsu,777918.0,109232.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+41.0,Changchun,长春,Jilin,763219.0,107168.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+42.0,Jiaxing,嘉兴,Zhejiang,756953.0,106288.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+43.0,Yulin,榆林,Shaanxi,754868.0,105995.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+44.0,"Taizhou, Jiangsu",泰州,Jiangsu,702095.0,98585.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+45.0,Jinhua,金华,Zhejiang,692550.0,97245.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+46.0,"Taizhou, Zhejiang",台州,Zhejiang,665640.0,93466.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+47.0,Linyi,临沂,Shandong,655580.0,92054.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+48.0,Ordos,鄂尔多斯,Inner Mongolia,636303.0,89347.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+49.0,Yichang,宜昌,Hubei,619112.0,86933.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+50.0,Huizhou,惠州,Guangdong,613639.0,86165.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP
+51.0,Xiangyang,襄阳,Hubei,610241.0,85688.0,https://en.wikipedia.org/wiki/List_of_Chinese_prefecture-level_cities_by_GDP

@@ -1,0 +1,15 @@
+﻿city_name_zh,city_name_en,cost_of_living_index,rent_index,cost_plus_rent_index,groceries_index,restaurant_price_index,local_purchasing_power_index,source
+上海,Shanghai,40.5,24.5,33.2,42.0,25.3,92.8,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+深圳,Shenzhen,38.9,19.3,29.9,44.1,23.7,102.8,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+北京,Beijing,38.3,24.3,31.9,39.8,25.0,89.9,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+广州,Guangzhou,36.5,12.2,25.4,41.7,23.4,95.4,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+苏州,Suzhou,36.2,10.8,24.5,41.5,27.2,103.3,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+杭州,Hangzhou,36.1,13.1,25.6,41.8,24.5,108.9,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+长沙,Changsha,32.4,6.4,20.5,40.6,21.4,100.6,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+南京,Nanjing,31.5,11.6,22.4,34.7,23.3,113.6,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+武汉,Wuhan,31.4,7.9,20.7,36.8,21.0,107.4,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+合肥,Hefei,31.0,6.1,19.6,40.2,19.4,97.1,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+,"Qingdao, Shandong",30.0,8.2,20.0,37.3,19.2,105.7,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+成都,Chengdu,28.6,10.0,20.1,35.3,20.8,114.9,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+重庆,Chongqing,28.5,9.0,19.6,36.0,19.6,104.2,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
+西安,Xi'an,27.3,8.0,18.5,32.6,17.3,108.1,https://www.numbeo.com/cost-of-living/country_result.jsp?country=China
