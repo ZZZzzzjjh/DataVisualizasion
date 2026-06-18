@@ -25,12 +25,27 @@ def load_env_file() -> None:
 load_env_file()
 
 
+def get_config(name: str, default: str | None = None) -> str | None:
+    value = os.getenv(name)
+    if value:
+        return value
+
+    try:
+        import streamlit as st
+
+        secret_value = st.secrets.get(name)
+    except Exception:
+        secret_value = None
+
+    return str(secret_value) if secret_value else default
+
+
 def has_api_key() -> bool:
-    return bool(os.getenv("DEEPSEEK_API_KEY"))
+    return bool(get_config("DEEPSEEK_API_KEY"))
 
 
 def analyze_with_deepseek(question: str, data_context: str) -> str:
-    api_key = os.getenv("DEEPSEEK_API_KEY")
+    api_key = get_config("DEEPSEEK_API_KEY")
     if not api_key:
         return "未配置 DEEPSEEK_API_KEY。请先在 .env 文件中配置后再使用智能分析。"
 
@@ -55,7 +70,7 @@ def analyze_with_deepseek(question: str, data_context: str) -> str:
 """
 
     payload: dict[str, Any] = {
-        "model": os.getenv("DEEPSEEK_MODEL", "deepseek-chat"),
+        "model": get_config("DEEPSEEK_MODEL", "deepseek-chat"),
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
@@ -69,7 +84,7 @@ def analyze_with_deepseek(question: str, data_context: str) -> str:
     }
 
     try:
-        api_url = os.getenv("DEEPSEEK_API_URL", "https://api.deepseek.com/chat/completions")
+        api_url = get_config("DEEPSEEK_API_URL", "https://api.deepseek.com/chat/completions")
         response = requests.post(api_url, headers=headers, json=payload, timeout=45)
         response.raise_for_status()
         data = response.json()
