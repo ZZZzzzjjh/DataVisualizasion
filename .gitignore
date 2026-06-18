@@ -12,3 +12,12 @@ __pycache__/
 Thumbs.db
 
 *.log
+
+/code/
+/data/
+/Data_Set/
+/figures/
+/picture/
+/scripts/
+/中间产物/
+/*.doc

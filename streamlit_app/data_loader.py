@@ -5,9 +5,20 @@ from pathlib import Path
 import pandas as pd
 
 
-ROOT = Path(__file__).resolve().parents[1]
-ENRICHED_PATH = ROOT / "data" / "cleaned" / "city_panel_enriched.csv"
-BASE_PATH = ROOT / "data" / "cleaned" / "city_panel_clean.csv"
+APP_DIR = Path(__file__).resolve().parent
+ROOT = APP_DIR.parents[0]
+
+
+def data_file(name: str) -> Path:
+    for base in [APP_DIR, ROOT]:
+        path = base / "data" / "cleaned" / name
+        if path.exists():
+            return path
+    return APP_DIR / "data" / "cleaned" / name
+
+
+ENRICHED_PATH = data_file("city_panel_enriched.csv")
+BASE_PATH = data_file("city_panel_clean.csv")
 DATA_PATH = ENRICHED_PATH if ENRICHED_PATH.exists() else BASE_PATH
 
 
@@ -394,7 +405,7 @@ def build_ai_context(df: pd.DataFrame, max_rows: int = 12) -> str:
     return data[existing].sort_values(sort_col, ascending=False).head(max_rows).to_csv(index=False)
 
 
-JOB_STRUCTURE_PATH = ROOT / "data" / "cleaned" / "city_job_structure.csv"
+JOB_STRUCTURE_PATH = data_file("city_job_structure.csv")
 
 
 def load_job_structure(path: Path = JOB_STRUCTURE_PATH) -> pd.DataFrame:
