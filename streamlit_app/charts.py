@@ -775,22 +775,23 @@ def industry_share_chart(job_df: pd.DataFrame, selected: list[str] | None = None
 
     if len(cities) == 1:
         city = cities[0]
-        city_df = plot_df[plot_df["city_name_zh"] == city].copy()
+        city_df = plot_df[plot_df["city_name_zh"] == city].sort_values("job_share_percent", ascending=False).copy()
         fig = go.Figure(
-            go.Bar(
+            go.Funnel(
                 x=city_df["job_share_percent"],
                 y=city_df["industry"],
-                orientation="h",
-                marker=dict(color=[_industry_color(v) for v in city_df["industry"]], line=dict(width=0)),
-                text=[f"{v:.0f}%" for v in city_df["job_share_percent"]],
-                textposition="outside",
+                marker=dict(color=[_industry_color(v) for v in city_df["industry"]], line=dict(width=1, color="#FFFFFF")),
+                connector=dict(line=dict(color="#CBD5E1", width=1)),
+                text=[f"{industry} · {share:.0f}%" for industry, share in zip(city_df["industry"], city_df["job_share_percent"])],
+                textinfo="text",
+                textposition="inside",
                 hovertemplate="%{y}<br>岗位占比：%{x:.0f}%<extra></extra>",
             )
         )
-        fig.update_layout(showlegend=False, title=f"{city} 行业岗位结构")
-        fig.update_xaxes(range=[0, max(36, city_df["job_share_percent"].max() + 8)], title="岗位占比（%）")
+        fig.update_layout(showlegend=False, title=f"{city} 行业岗位结构金字塔")
+        fig.update_xaxes(title="岗位占比（%）")
         fig.update_yaxes(title="")
-        return _clean_layout(fig, 360)
+        return _clean_layout(fig, 390)
 
     plot_df = plot_df.sort_values(["city_name_zh", "job_share_percent"], ascending=[True, False])
     fig = px.bar(
