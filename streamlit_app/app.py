@@ -13,9 +13,11 @@ if str(CURRENT_DIR) not in sys.path:
 from charts import (
     balance_quadrant,
     bar_rank,
+    city_type_donut,
     compare_grouped_bars,
     education_structure_chart,
     grouped_metric_bar,
+    income_allocation_chart,
     industry_share_chart,
     multi_city_decision_heatmap,
     multi_city_gap_bars,
@@ -34,7 +36,6 @@ from data_loader import (
     field_dictionary,
     filter_data,
     filter_job_structure,
-    generate_rule_based_insights,
     job_data_available,
     load_city_data,
     load_job_structure,
@@ -241,10 +242,6 @@ for row_start in range(0, len(metric_items), 3):
     for col, (label, value) in zip(cols, metric_items[row_start : row_start + 3]):
         col.metric(label, value)
 
-with st.expander("当前筛选的自动洞察", expanded=False):
-    for item in generate_rule_based_insights(filtered):
-        st.markdown(f"- {item}")
-
 if not job_data_available(filtered):
     st.warning("当前薪资、生活成本或租金字段不足，部分图表会显示为暂无数据。")
 
@@ -283,7 +280,7 @@ with tab_cost:
         st.plotly_chart(bar_rank(filtered, "monthly_cost_single_rmb", "单人月生活成本对比", "元/月", top_n), width="stretch", key="cost_single")
     with c2:
         st.plotly_chart(bar_rank(filtered, "rent_1br_city_centre_rmb", "市中心一居室月租金对比", "元/月", top_n), width="stretch", key="cost_rent")
-    st.plotly_chart(bar_rank(filtered, "monthly_balance_after_cost_rmb", "扣除单人生活成本后月结余", "元/月", top_n), width="stretch", key="cost_balance")
+    st.plotly_chart(income_allocation_chart(filtered, top_n), width="stretch", key="cost_allocation")
 
 with tab_match:
     st.subheader("薪资匹配")
@@ -294,7 +291,11 @@ with tab_match:
         st.plotly_chart(balance_quadrant(filtered), width="stretch", key="match_balance")
 with tab_segments:
     st.subheader("城市分型")
-    st.plotly_chart(balance_quadrant(filtered), width="stretch", key="model_quadrant")
+    c1, c2 = st.columns([1.25, 0.75])
+    with c1:
+        st.plotly_chart(balance_quadrant(filtered), width="stretch", key="model_quadrant")
+    with c2:
+        st.plotly_chart(city_type_donut(filtered), width="stretch", key="model_type_donut")
     st.markdown("#### 按实际月结余排序")
     st.dataframe(
         score_table(filtered),
@@ -350,7 +351,6 @@ with tab_workspace:
 
 with tab_recommend:
     st.subheader("推荐助手")
-    st.caption("先用硬性条件筛掉不符合要求的城市，再用可调权重计算推荐分；权重会自动归一化为 100%。")
     requirement = st.text_area(
         "你的城市选择要求",
         value="我是应届毕业生，希望城市就业机会不错，房租不要太高，扣除生活成本和房租后还能有一定结余。",
