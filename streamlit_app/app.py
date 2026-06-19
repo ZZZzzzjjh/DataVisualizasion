@@ -10,24 +10,7 @@ CURRENT_DIR = Path(__file__).resolve().parent
 if str(CURRENT_DIR) not in sys.path:
     sys.path.insert(0, str(CURRENT_DIR))
 
-from charts import (
-    balance_quadrant,
-    bar_rank,
-    city_type_donut,
-    compare_grouped_bars,
-    education_structure_chart,
-    grouped_metric_bar,
-    income_allocation_chart,
-    industry_share_chart,
-    multi_city_decision_heatmap,
-    multi_city_gap_bars,
-    position_salary_chart,
-    scatter_salary_cost,
-    score_table,
-    single_city_benchmark,
-    single_city_budget_waterfall,
-    tier_box,
-)
+import charts as chartlib
 from data_loader import (
     build_ai_context,
     city_compare_table,
@@ -44,6 +27,34 @@ from data_loader import (
 )
 from deepseek_client import analyze_with_deepseek
 from styles import apply_style
+
+
+balance_quadrant = chartlib.balance_quadrant
+bar_rank = chartlib.bar_rank
+compare_grouped_bars = chartlib.compare_grouped_bars
+education_structure_chart = chartlib.education_structure_chart
+grouped_metric_bar = chartlib.grouped_metric_bar
+industry_share_chart = chartlib.industry_share_chart
+multi_city_decision_heatmap = chartlib.multi_city_decision_heatmap
+multi_city_gap_bars = chartlib.multi_city_gap_bars
+position_salary_chart = chartlib.position_salary_chart
+scatter_salary_cost = chartlib.scatter_salary_cost
+score_table = chartlib.score_table
+single_city_benchmark = chartlib.single_city_benchmark
+single_city_budget_waterfall = chartlib.single_city_budget_waterfall
+tier_box = chartlib.tier_box
+
+
+def city_type_donut(df: pd.DataFrame):
+    if hasattr(chartlib, "city_type_donut"):
+        return chartlib.city_type_donut(df)
+    return chartlib.categorical_bar(df, "city_type", "城市类型分布")
+
+
+def income_allocation_chart(df: pd.DataFrame, top_n: int = 10):
+    if hasattr(chartlib, "income_allocation_chart"):
+        return chartlib.income_allocation_chart(df, top_n)
+    return chartlib.bar_rank(df, "monthly_balance_after_cost_rmb", "扣除单人生活成本后月结余", "元/月", top_n)
 
 
 st.set_page_config(page_title="城市就业与生活成本分析", page_icon="📊", layout="wide")
