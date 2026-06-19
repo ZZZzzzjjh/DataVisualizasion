@@ -5,7 +5,15 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
-COLOR_SEQ = ["#0F4C81", "#2F6F9F", "#4F8FC0", "#74A9D8", "#9CC7E6", "#5B6F95", "#24476B"]
+COLOR_SEQ = ["#0F4C81", "#1B8A8F", "#D89C27", "#C65D7B", "#64748B", "#74A9D8", "#B7D4EA"]
+CITY_TYPE_COLORS = {
+    "高薪高成本": "#0F4C81",
+    "高薪较低成本": "#1B8A8F",
+    "均衡发展型": "#D89C27",
+    "收入压力型": "#C65D7B",
+    "数据不足": "#94A3B8",
+}
+TYPE_ORDER = ["高薪较低成本", "均衡发展型", "高薪高成本", "收入压力型", "数据不足"]
 RMB_METRICS = {
     "税后月薪": "avg_salary",
     "单人生活成本": "monthly_cost_single_rmb",
@@ -34,6 +42,56 @@ def _text_template(unit: str) -> str:
     if "元" in unit or "亿元" in unit:
         return "%{text:,.0f}"
     return "%{text:.2f}"
+
+
+def _focus_city_labels(data: pd.DataFrame, x_col: str, y_col: str, max_labels: int = 9) -> pd.Series:
+    """Label only analytical outliers so small scatter charts stay readable."""
+    if data.empty:
+        return pd.Series(dtype="object")
+
+    focus: set[int] = set()
+    for col in [x_col, y_col]:
+        values = pd.to_numeric(data[col], errors="coerce")
+        if values.notna().sum() < 2:
+            continue
+        focus.add(values.idxmax())
+        focus.add(values.idxmin())
+
+    if len(focus) < max_labels:
+        x = pd.to_numeric(data[x_col], errors="coerce")
+        y = pd.to_numeric(data[y_col], errors="coerce")
+        x_z = (x - x.mean()) / (x.std() or 1)
+        y_z = (y - y.mean()) / (y.std() or 1)
+        distance = (x_z.pow(2) + y_z.pow(2)).sort_values(ascending=False)
+        focus.update(distance.head(max_labels).index.tolist())
+
+    focus = set(list(focus)[:max_labels])
+    return data.apply(lambda row: row["display_city"] if row.name in focus else "", axis=1)
+
+
+def _polish_xy(fig: go.Figure, title: str, x_title: str, y_title: str, height: int = 500) -> go.Figure:
+    fig.update_traces(
+        marker=dict(line=dict(width=1, color="#FFFFFF"), opacity=0.82),
+        textfont=dict(size=12, color="#334155"),
+        selector=dict(mode="markers+text"),
+    )
+    fig.update_layout(
+        title=title,
+        height=height,
+        template="simple_white",
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
+        font=dict(family="Microsoft YaHei, Arial, sans-serif", size=13, color="#334155"),
+        title_font=dict(size=18, color="#1F2937"),
+        xaxis_title=x_title,
+        yaxis_title=y_title,
+        legend_title_text="城市类型",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        margin=dict(l=54, r=38, t=74, b=54),
+    )
+    fig.update_xaxes(showgrid=True, gridcolor="#E5E7EB", zeroline=False, ticks="")
+    fig.update_yaxes(showgrid=True, gridcolor="#E5E7EB", zeroline=False, ticks="")
+    return fig
 
 
 def bar_rank(df: pd.DataFrame, column: str, title: str, unit: str = "", top_n: int = 10) -> go.Figure:
@@ -117,6 +175,8 @@ def scatter_salary_cost(df: pd.DataFrame) -> go.Figure:
     data = df.dropna(subset=needed)
     if data.empty:
         return empty_chart()
+    data = data.copy()
+    data["重点标注"] = _focus_city_labels(data, "monthly_cost_single_rmb", "avg_salary", max_labels=8)
     size_col = "rent_1br_city_centre_rmb" if data["rent_1br_city_centre_rmb"].notna().any() else None
     fig = px.scatter(
         data,
@@ -125,8 +185,9 @@ def scatter_salary_cost(df: pd.DataFrame) -> go.Figure:
         size=size_col,
         color="city_type",
         hover_name="display_city",
-        text="display_city",
-        color_discrete_sequence=COLOR_SEQ,
+        text="重点标注",
+        color_discrete_map=CITY_TYPE_COLORS,
+        category_orders={"city_type": TYPE_ORDER},
         labels={
             "monthly_cost_single_rmb": "单人月生活成本（元/月，不含房租）",
             "avg_salary": "税后月薪（元/月）",
@@ -134,13 +195,24 @@ def scatter_salary_cost(df: pd.DataFrame) -> go.Figure:
             "city_type": "城市类型",
         },
     )
-    fig.update_traces(textposition="top center")
-    fig.update_layout(
-        title="税后月薪与单人月生活成本关系",
-        height=460,
-        margin=dict(l=40, r=40, t=60, b=40),
+    fig.update_traces(textposition="top center", cliponaxis=False)
+    fig.add_annotation(
+        xref="paper",
+        yref="paper",
+        x=0.01,
+        y=1.08,
+        text="仅标注极值和离群城市；其余城市可悬停查看，避免标签遮挡。",
+        showarrow=False,
+        font=dict(size=12, color="#64748B"),
+        align="left",
     )
-    return fig
+    return _polish_xy(
+        fig,
+        "税后月薪与单人月生活成本关系",
+        "单人月生活成本（元/月，不含房租）",
+        "税后月薪（元/月）",
+        480,
+    )
 
 
 def balance_quadrant(df: pd.DataFrame) -> go.Figure:
@@ -150,8 +222,10 @@ def balance_quadrant(df: pd.DataFrame) -> go.Figure:
     data = df.dropna(subset=needed)
     if data.empty:
         return empty_chart()
+    data = data.copy()
     x_mid = data["avg_salary"].median()
     y_mid = data["monthly_balance_after_rent_cost_rmb"].median()
+    data["重点标注"] = _focus_city_labels(data, "avg_salary", "monthly_balance_after_rent_cost_rmb", max_labels=10)
     fig = px.scatter(
         data,
         x="avg_salary",
@@ -159,8 +233,9 @@ def balance_quadrant(df: pd.DataFrame) -> go.Figure:
         size="monthly_cost_single_rmb",
         color="city_type",
         hover_name="display_city",
-        text="display_city",
-        color_discrete_sequence=COLOR_SEQ,
+        text="重点标注",
+        color_discrete_map=CITY_TYPE_COLORS,
+        category_orders={"city_type": TYPE_ORDER},
         labels={
             "avg_salary": "税后月薪（元/月）",
             "monthly_balance_after_rent_cost_rmb": "扣除生活成本和房租后月结余（元/月）",
@@ -170,13 +245,18 @@ def balance_quadrant(df: pd.DataFrame) -> go.Figure:
     )
     fig.add_vline(x=x_mid, line_dash="dash", line_color="#64748B")
     fig.add_hline(y=y_mid, line_dash="dash", line_color="#64748B")
-    fig.update_traces(textposition="top center")
-    fig.update_layout(
-        title="月薪与实际月结余四象限",
-        height=500,
-        margin=dict(l=40, r=40, t=60, b=40),
+    fig.update_traces(textposition="top center", cliponaxis=False)
+    fig.add_annotation(x=0.03, y=0.95, xref="paper", yref="paper", text="低薪高结余", showarrow=False, font=dict(color="#64748B", size=12))
+    fig.add_annotation(x=0.97, y=0.95, xref="paper", yref="paper", text="高薪高结余", showarrow=False, font=dict(color="#64748B", size=12))
+    fig.add_annotation(x=0.03, y=0.05, xref="paper", yref="paper", text="低薪低结余", showarrow=False, font=dict(color="#64748B", size=12))
+    fig.add_annotation(x=0.97, y=0.05, xref="paper", yref="paper", text="高薪低结余", showarrow=False, font=dict(color="#64748B", size=12))
+    return _polish_xy(
+        fig,
+        "月薪与实际月结余四象限",
+        "税后月薪（元/月）",
+        "扣除生活成本和房租后月结余（元/月）",
+        520,
     )
-    return fig
 
 
 def single_city_budget_waterfall(df: pd.DataFrame, city: str) -> go.Figure:

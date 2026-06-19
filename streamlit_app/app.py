@@ -34,6 +34,7 @@ from data_loader import (
     field_dictionary,
     filter_data,
     filter_job_structure,
+    generate_rule_based_insights,
     job_data_available,
     load_city_data,
     load_job_structure,
@@ -83,8 +84,32 @@ def normalize_metric(series: pd.Series, higher_better: bool = True) -> pd.Series
     return score if higher_better else 1 - score
 
 
-def build_recommendations(df: pd.DataFrame, min_salary: int, max_rent: int, min_balance: int, top_k: int) -> pd.DataFrame:
+DEFAULT_RECOMMEND_WEIGHTS = {
+    "月结余": 0.38,
+    "税后月薪": 0.24,
+    "低房租": 0.18,
+    "低生活成本": 0.12,
+    "就业热度": 0.08,
+}
+
+
+def normalize_weights(weights: dict[str, float]) -> dict[str, float]:
+    total = sum(max(float(value), 0.0) for value in weights.values())
+    if total <= 0:
+        return DEFAULT_RECOMMEND_WEIGHTS.copy()
+    return {key: max(float(value), 0.0) / total for key, value in weights.items()}
+
+
+def build_recommendations(
+    df: pd.DataFrame,
+    min_salary: int,
+    max_rent: int,
+    min_balance: int,
+    top_k: int,
+    weights: dict[str, float] | None = None,
+) -> pd.DataFrame:
     data = df.copy()
+    weights = normalize_weights(weights or DEFAULT_RECOMMEND_WEIGHTS)
     numeric_cols = [
         "avg_salary",
         "monthly_cost_single_rmb",
@@ -105,12 +130,24 @@ def build_recommendations(df: pd.DataFrame, min_salary: int, max_rent: int, min_
     if data.empty:
         return pd.DataFrame()
 
+    data["_月结余得分"] = normalize_metric(data["monthly_balance_after_rent_cost_rmb"], True)
+    data["_税后月薪得分"] = normalize_metric(data["avg_salary"], True)
+    data["_低房租得分"] = normalize_metric(data["rent_1br_city_centre_rmb"], False)
+    data["_低生活成本得分"] = normalize_metric(data["monthly_cost_single_rmb"], False)
+    data["_就业热度得分"] = normalize_metric(data["job_market_proxy"], True)
     data["推荐分"] = (
-        normalize_metric(data["monthly_balance_after_rent_cost_rmb"], True) * 0.38
-        + normalize_metric(data["avg_salary"], True) * 0.24
-        + normalize_metric(data["rent_1br_city_centre_rmb"], False) * 0.18
-        + normalize_metric(data["monthly_cost_single_rmb"], False) * 0.12
-        + normalize_metric(data["job_market_proxy"], True) * 0.08
+        data["_月结余得分"] * weights["月结余"]
+        + data["_税后月薪得分"] * weights["税后月薪"]
+        + data["_低房租得分"] * weights["低房租"]
+        + data["_低生活成本得分"] * weights["低生活成本"]
+        + data["_就业热度得分"] * weights["就业热度"]
+    )
+    data["权重结构"] = (
+        f"月结余 {weights['月结余']:.0%} / "
+        f"月薪 {weights['税后月薪']:.0%} / "
+        f"低房租 {weights['低房租']:.0%} / "
+        f"低成本 {weights['低生活成本']:.0%} / "
+        f"就业 {weights['就业热度']:.0%}"
     )
     data["推荐理由"] = data.apply(
         lambda row: (
@@ -130,6 +167,7 @@ def build_recommendations(df: pd.DataFrame, min_salary: int, max_rent: int, min_
         "monthly_balance_after_rent_cost_rmb",
         "city_type",
         "推荐分",
+        "权重结构",
         "推荐理由",
     ]
     out = data[[col for col in cols if col in data.columns]].sort_values("推荐分", ascending=False).head(top_k)
@@ -202,6 +240,10 @@ for row_start in range(0, len(metric_items), 3):
     cols = st.columns(min(3, len(metric_items) - row_start))
     for col, (label, value) in zip(cols, metric_items[row_start : row_start + 3]):
         col.metric(label, value)
+
+with st.expander("当前筛选的自动洞察", expanded=False):
+    for item in generate_rule_based_insights(filtered):
+        st.markdown(f"- {item}")
 
 if not job_data_available(filtered):
     st.warning("当前薪资、生活成本或租金字段不足，部分图表会显示为暂无数据。")
@@ -308,6 +350,7 @@ with tab_workspace:
 
 with tab_recommend:
     st.subheader("推荐助手")
+    st.caption("先用硬性条件筛掉不符合要求的城市，再用可调权重计算推荐分；权重会自动归一化为 100%。")
     requirement = st.text_area(
         "你的城市选择要求",
         value="我是应届毕业生，希望城市就业机会不错，房租不要太高，扣除生活成本和房租后还能有一定结余。",
@@ -323,7 +366,38 @@ with tab_recommend:
     with c4:
         top_k = st.number_input("推荐数量", min_value=3, max_value=10, value=5, step=1)
 
-    recommendations = build_recommendations(filtered, min_salary, max_rent, min_balance, int(top_k))
+    with st.expander("推荐模型权重设置", expanded=True):
+        w1, w2, w3, w4, w5 = st.columns(5)
+        with w1:
+            weight_balance = st.slider("月结余", 0, 60, 38, help="越高越偏向扣除生活成本和房租后剩余更多的城市")
+        with w2:
+            weight_salary = st.slider("月薪", 0, 60, 24, help="越高越偏向税后月薪更高的城市")
+        with w3:
+            weight_rent = st.slider("低房租", 0, 60, 18, help="越高越偏向市中心一居室租金更低的城市")
+        with w4:
+            weight_cost = st.slider("低生活成本", 0, 60, 12, help="越高越偏向日常生活成本更低的城市")
+        with w5:
+            weight_job = st.slider("就业热度", 0, 60, 8, help="越高越偏向就业热度代理指标更高的城市")
+
+    recommend_weights = normalize_weights(
+        {
+            "月结余": weight_balance,
+            "税后月薪": weight_salary,
+            "低房租": weight_rent,
+            "低生活成本": weight_cost,
+            "就业热度": weight_job,
+        }
+    )
+    st.caption(
+        "当前归一化权重："
+        f"月结余 {recommend_weights['月结余']:.0%}，"
+        f"月薪 {recommend_weights['税后月薪']:.0%}，"
+        f"低房租 {recommend_weights['低房租']:.0%}，"
+        f"低生活成本 {recommend_weights['低生活成本']:.0%}，"
+        f"就业热度 {recommend_weights['就业热度']:.0%}。"
+    )
+
+    recommendations = build_recommendations(filtered, min_salary, max_rent, min_balance, int(top_k), recommend_weights)
     if recommendations.empty:
         st.warning("当前硬性条件下没有城市满足要求，可以适当降低最低月薪、提高可接受房租或减少最低结余。")
     else:
@@ -349,6 +423,7 @@ with tab_recommend:
 - 最低税后月薪：{min_salary} 元/月
 - 最高可接受房租：{max_rent} 元/月
 - 最低实际月结余：{min_balance} 元/月
+- 当前推荐权重：{recommendations["权重结构"].iloc[0] if not recommendations.empty and "权重结构" in recommendations.columns else "默认权重"}
 
 请基于候选城市数据推荐 3-5 个城市，并说明推荐排序、每个城市适合的原因、需要注意的风险，以及可以直接写进课程报告的一段总结。
 """
@@ -376,6 +451,11 @@ with tab_ai:
             st.markdown(analyze_with_deepseek(question, build_ai_context(selected_for_ai)))
 with tab_data:
     st.subheader("数据管理")
+    st.info(
+        "数据可信度说明：GDP、人口等宏观指标来自公开统计资料或公开网页整理；"
+        "生活成本和租金主要参考 Numbeo，适合做城市间相对比较；"
+        "就业结构表为课程项目补充数据，不代表实时全量招聘岗位。"
+    )
     st.dataframe(expected_columns_by_chapter(), width="stretch", hide_index=True)
     st.subheader("字段字典")
     st.dataframe(field_dictionary(), width="stretch", hide_index=True)
